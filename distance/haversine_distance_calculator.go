@@ -15,7 +15,6 @@ const earthRadiusInKM = 6373
 //		Wikipedia: https://en.wikipedia.org/wiki/Haversine_formula
 type Haversine struct{}
 
-
 // Returns the approximated distance based on Haversine formula.
 func (h *Haversine) CalculateDistance(firstCoordinates, secondCoordinates model.Coordinates) float32 {
 	lon1 := toRadians(firstCoordinates.Longitude)
