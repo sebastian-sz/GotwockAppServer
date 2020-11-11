@@ -22,6 +22,6 @@ type TouristLocation struct {
 	ObjectId    int32
 	Name        string
 	Description string
-	Distance    string
+	Distance    float32
 	Position    Coordinates
 }
