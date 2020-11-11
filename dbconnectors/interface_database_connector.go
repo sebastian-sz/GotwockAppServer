@@ -9,5 +9,6 @@ import "github.com/sebastian-sz/GotwockAppServer/model"
 // This map should be later passed to other components who will parse it,
 // calculate distance and form into proper response (suitable for sending over REST or other services).
 type DatabaseConnector interface {
+	Initialize()
 	ProvideData() map[int]model.SingleDataField
 }

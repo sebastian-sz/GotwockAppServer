@@ -32,7 +32,7 @@ func TestJSONDataConnector_LoadContentToMemory(t *testing.T) {
 	}
 	expectedLoadedContent := makeExpectedLoadedContent()
 
-	jsonDBConnector.LoadContentToMemory()
+	jsonDBConnector.Initialize()
 
 	assert.Equal(t, expectedLoadedContent, jsonDBConnector.CachedData)
 
@@ -45,7 +45,7 @@ func TestJSONDataConnector_ProvideData(t *testing.T) {
 	}
 	expectedLoadedContent := makeExpectedLoadedContent()
 
-	jsonDBConnector.LoadContentToMemory()
+	jsonDBConnector.Initialize()
 	providedData := jsonDBConnector.ProvideData()
 
 	assert.Equal(t, providedData, expectedLoadedContent)
