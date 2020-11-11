@@ -1,14 +1,44 @@
 {
   "1": {
-    "Latitude": 52.1039472,
-    "Longitude": 21.26832,
-    "Name": "City Hall",
-    "Description": "City Hall of the Otwock city."
+    "latitude": 52.1039472,
+    "longitude": 21.26832,
+    "name": "City Hall",
+    "description": "City Hall of the Otwock city."
   },
   "2": {
-    "Latitude": 52.1095869,
-    "Longitude": 21.2630788,
-    "Name": "Railway Station",
-    "Description": "Railway Station of the Otwock city."
+    "latitude": 52.1095869,
+    "longitude": 21.2630788,
+    "name": "Railway Station",
+    "description": "Railway Station of the Otwock city."
+  },
+  "3": {
+    "latitude": 52.1362265,
+    "longitude": 21.2364616,
+    "name": "Jozefow Railway Station",
+    "description": "Railway Station of the Jozefow city."
+  },
+  "4": {
+    "latitude": 52.1243286,
+    "longitude": 21.3386966,
+    "name": "Nuclear Reactor",
+    "description": "Nuclear reactor just outside of Otwock city."
+  },
+  "5": {
+    "latitude": 52.1097756,
+    "longitude": 21.2890232,
+    "name": "Swiss village",
+    "description": "Swiss village of the Otwock city."
+  },
+  "6": {
+    "latitude": 52.1621099,
+    "longitude": 21.2111287,
+    "name": "Falenica Railway Station.",
+    "description": "Railways Station of the Falenica District."
+  },
+  "7": {
+    "latitude": 52.1729994,
+    "longitude": 21.1998755,
+    "name": "Miedzeszyn Railway Sation",
+    "description": "Railway Station of Miedzeszyn District."
   }
 }

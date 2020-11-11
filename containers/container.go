@@ -1,7 +1,6 @@
 package containers
 
 import (
-	"fmt"
 	"github.com/sebastian-sz/GotwockAppServer/dbconnectors"
 	"github.com/sebastian-sz/GotwockAppServer/distance"
 	"github.com/sebastian-sz/GotwockAppServer/location"
@@ -37,7 +36,5 @@ func initializeTouristLocationProvider(
 func CreateJSONHaversineTouristLocationProvider() location.TouristLocationProvider {
 	haversine := initializeHaverstein()
 	jsonConnector := initializeJSONDatabaseConnector()
-	fmt.Print(&jsonConnector)
-	fmt.Println()
 	return initializeTouristLocationProvider(&jsonConnector, &haversine)
 }
