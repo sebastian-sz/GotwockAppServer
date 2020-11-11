@@ -36,12 +36,18 @@ func (j *JSONDataConnector) readJson() []byte {
 // JSONDataConnector method for reading the .json file and loading it's content to memory.
 // The loaded content will be held under CachedData field of the JSONDataConnector struct.
 // Note that this method should be called right after creating the JSONDataConnector struct.
-func (j *JSONDataConnector) LoadContentToMemory() {
+func (j *JSONDataConnector) loadContentToMemory() {
 	fileContent := j.readJson()
 	err := json.Unmarshal(fileContent, &j.CachedData)
 	if err != nil {
 		log.Fatal("Error unmarshalling json: ", err)
 	}
+}
+
+// Initialize the connection with a database.
+// In case of JSONDataConnector that means loading the content in memory.
+func (j *JSONDataConnector) Initialize() {
+	j.loadContentToMemory()
 }
 
 // Overloaded interface method. It returns the map of object Id (int) and generic data (SingleDataField)
