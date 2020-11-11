@@ -1,11 +1,79 @@
+// Package, containing the core logic of this application. The main goal is to fetch and parse the data from the
+// database and return an easily jsonable structure that can be exposed via Web Server.
+// We make use of two other packages available in this repo, mainly distance (for calculating distance) and dbconnectors
+// (for fetching data).
 package location
 
 import (
 	"github.com/sebastian-sz/GotwockAppServer/dbconnectors"
 	"github.com/sebastian-sz/GotwockAppServer/distance"
+	"github.com/sebastian-sz/GotwockAppServer/model"
+	"sort"
 )
 
+// The main struct of this package. It should accept initialised Database Connector and Distance Calculator. Keep in
+// mind that pointers are being used in order not to replicate heavy objects (eg. JSONDataConnector).
+// Methods:
+// 		GetAndParseTouristLocationData: This method should accept userCoordinates (latitude and longitude) and a float32
+//		indicating maximum distance for which to return TouristLocations. If you want to return all locations, without
+//		distance filtering, simply provide 0.
+//
 type TouristLocationProvider struct {
 	DistanceCalculator *distance.Calculator
 	DatabaseConnector  *dbconnectors.DatabaseConnector
+}
+
+// This method fetches data from DatabaseConnector. This data is parsed in a way that:
+// 		1. Distance from the user is calculated (via DistanceCalculator) for each location.
+//		2. If the max distance is 0 or the distance from user is smaller than this threshold, the TouristLocation object
+//		is created and appended to the final results array (slice).
+//		3. Finally the results array (slice) is sorted based on the distance from the user.
+func (t *TouristLocationProvider) GetAndParseTouristLocationData(
+	userCoordinates model.Coordinates,
+	maxDistanceFromUser float32,
+) []model.TouristLocation {
+
+	var results []model.TouristLocation
+	singleDataFieldToIntMap := (*t.DatabaseConnector).ProvideData()
+
+	for objectId, dataField := range singleDataFieldToIntMap {
+		locationCoordinates := model.Coordinates{
+			Latitude:  dataField.Latitude,
+			Longitude: dataField.Longitude,
+		}
+
+		distanceToLocation := (*t.DistanceCalculator).CalculateDistance(userCoordinates, locationCoordinates)
+
+		if isDistanceOk(maxDistanceFromUser, distanceToLocation) {
+			touristLocation := model.TouristLocation{
+				ObjectId:    int32(objectId),
+				Name:        dataField.Name,
+				Description: dataField.Description,
+				Distance:    distanceToLocation,
+				Position:    locationCoordinates,
+			}
+
+			results = append(results, touristLocation)
+		}
+	}
+	sortResultsByDistance(results)
+
+	return results
+}
+
+// Sorts the TouristLocation slice by distance from the user, ascending.
+func sortResultsByDistance(resultSlice []model.TouristLocation) {
+	sort.SliceStable(resultSlice, func(i, j int) bool {
+		return (resultSlice[i]).Distance < ((resultSlice)[j]).Distance
+	})
+}
+
+// Boolean check if we want to append certain locations to the list that we will later send to the users.
+// There are two cases here:
+// 		1. max distance is zero, meaning the user wants to see all the locations.
+// 		2. max distance is non zero, meaning we want to have true if distance is smaller or equal to max possible
+//		distance.
+func isDistanceOk(maxDistanceFromUser, distanceToLocation float32) bool {
+	return maxDistanceFromUser == 0 || distanceToLocation <= maxDistanceFromUser
+
 }
