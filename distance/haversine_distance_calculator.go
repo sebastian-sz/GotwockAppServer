@@ -8,9 +8,9 @@ import (
 const earthRadiusInKM = 6373
 
 // Struct implementing Haversine formula for distance approximation.
-// is suitable for calculating short distances and non-critical applications (like not boat sailing or navigating).
-// which apply here as we just want the distance estimate.
-// Source:
+// It is suitable for calculating short distances and non-critical applications (like not boat sailing or navigating).
+// Both apply here as we just want the distance estimate.
+// Sources:
 // 		Blog: https://andrew.hedges.name/experiments/haversine/
 //		Wikipedia: https://en.wikipedia.org/wiki/Haversine_formula
 type Haversine struct{}
@@ -29,10 +29,14 @@ func (h *Haversine) CalculateDistance(firstCoordinates, secondCoordinates model.
 	return float32(2 * earthRadiusInKM * math.Asin(math.Sqrt(haversine)))
 }
 
+// Converts degrees to radians.
 func toRadians(value float32) float64 {
 	return float64(value * math.Pi / 180)
 }
 
+// Calculates Haversine function for a given value.
+// The formula is taken from Wikipedia:
+//		https://en.wikipedia.org/wiki/Versine#Haversine
 func haversineFunc(value float64) float64 {
 	return math.Pow(math.Sin(value/2), 2)
 }
