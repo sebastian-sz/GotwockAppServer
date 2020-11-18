@@ -51,31 +51,31 @@ func Test_isDistanceOk(t *testing.T) {
 
 // Run parametrized test to check, whether function sortResultsByDistance correctly sorts (in-place) given slice.
 func Test_sortResultsByDistance(t *testing.T) {
-	firstLocation := model.TouristLocation{
+	firstLocation := model.Location{
 		Distance: 1.0,
 	}
-	secondLocation := model.TouristLocation{
+	secondLocation := model.Location{
 		Distance: 8.0,
 	}
-	thirdLocation := model.TouristLocation{
+	thirdLocation := model.Location{
 		Distance: 16.0,
 	}
 
 	testCases := []struct {
-		inputSlice    []model.TouristLocation
-		expectedSlice []model.TouristLocation
+		inputSlice    []model.Location
+		expectedSlice []model.Location
 	}{
 		{ // Case mixed two elements
-			inputSlice:    []model.TouristLocation{firstLocation, thirdLocation, secondLocation},
-			expectedSlice: []model.TouristLocation{firstLocation, secondLocation, thirdLocation},
+			inputSlice:    []model.Location{firstLocation, thirdLocation, secondLocation},
+			expectedSlice: []model.Location{firstLocation, secondLocation, thirdLocation},
 		},
 		{ // Case the slice is reversed
-			inputSlice:    []model.TouristLocation{thirdLocation, secondLocation, firstLocation},
-			expectedSlice: []model.TouristLocation{firstLocation, secondLocation, thirdLocation},
+			inputSlice:    []model.Location{thirdLocation, secondLocation, firstLocation},
+			expectedSlice: []model.Location{firstLocation, secondLocation, thirdLocation},
 		},
 		{ // Case empty slices
-			inputSlice:    []model.TouristLocation{},
-			expectedSlice: []model.TouristLocation{},
+			inputSlice:    []model.Location{},
+			expectedSlice: []model.Location{},
 		},
 	}
 
@@ -86,8 +86,8 @@ func Test_sortResultsByDistance(t *testing.T) {
 	}
 }
 
-func initializeJsonHaversineTouristLocationProvider() TouristLocationProvider {
-	var haversine distance.Calculator = &distance.Haversine{}
+func initializeJsonHaversineTouristLocationProvider() LocationsProvider {
+	var haversine distance.Estimator = &distance.Haversine{}
 	var jsonDbConnector dbconnectors.DatabaseConnector = &dbconnectors.JSONDataConnector{
 		DataPath:   "../data/otwock_db.json",
 		CachedData: nil,
@@ -95,19 +95,19 @@ func initializeJsonHaversineTouristLocationProvider() TouristLocationProvider {
 
 	jsonDbConnector.Initialize()
 
-	return TouristLocationProvider{
-		DistanceCalculator: &haversine,
-		DatabaseConnector:  &jsonDbConnector,
+	return LocationsProvider{
+		DistanceEstimator: &haversine,
+		DatabaseConnector: &jsonDbConnector,
 	}
 }
 
-// Test end-to-end flow for TouristLocationProvider
+// Test end-to-end flow for LocationsProvider
 func TestTouristLocationProvider_GetAndParseTouristLocationData(t *testing.T) {
 	tolerance := 0.002
 	touristLocationProvider := initializeJsonHaversineTouristLocationProvider()
 	userCoordinates := model.Coordinates{Latitude: 52.0989711, Longitude: 21.2715719} // City Park
 	maxDistance := float32(5.0)
-	expectedUserLocations := []model.TouristLocation{
+	expectedUserLocations := []model.Location{
 		{
 			ObjectId:    1,
 			Name:        "City Hall",
@@ -138,7 +138,7 @@ func TestTouristLocationProvider_GetAndParseTouristLocationData(t *testing.T) {
 		},
 	}
 
-	actualUserLocations := touristLocationProvider.GetAndParseTouristLocationData(userCoordinates, maxDistance)
+	actualUserLocations := touristLocationProvider.GetAndParseLocationsData(userCoordinates, maxDistance)
 
 	// Due to floating point number (Distance) we must compare specifically:
 	assert.Equal(t, len(expectedUserLocations), len(actualUserLocations))

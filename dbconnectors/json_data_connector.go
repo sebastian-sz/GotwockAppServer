@@ -20,7 +20,7 @@ import (
 //     method.
 type JSONDataConnector struct {
 	DataPath   string
-	CachedData map[int]model.SingleDataField
+	CachedData map[int]model.SingleLocationData
 }
 
 // JSONDataConnector method for reading content of a .json file.
@@ -50,9 +50,9 @@ func (j *JSONDataConnector) Initialize() {
 	j.loadContentToMemory()
 }
 
-// Overloaded interface method. It returns the map of object Id (int) and generic data (SingleDataField)
+// Overloaded interface method. It returns the map of object Id (int) and generic data (SingleLocationData)
 // In practice, for JSONDataConnector this method only returns cached content that is loaded after calling
 // LoadContentToMemory().
-func (j *JSONDataConnector) ProvideData() map[int]model.SingleDataField {
+func (j *JSONDataConnector) ProvideData() map[int]model.SingleLocationData {
 	return j.CachedData
 }
