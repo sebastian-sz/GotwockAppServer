@@ -8,17 +8,18 @@ type Coordinates struct {
 	Longitude float32
 }
 
-// Single location data as present in the database.
+// Single data field as present in the database.
 // This is passed (in form of a map) via DatabaseConnector.ProvideData() method.
-type SingleDataField struct {
+type SingleLocationData struct {
 	Latitude    float32
 	Longitude   float32
 	Name        string
 	Description string
 }
 
-// Todo: add documentation.
-type TouristLocation struct {
+// Struct describing single location data as returned by the location.LocationsProvider and by the appserver.App. This
+// is the data that (in form of a slice) will be passed by the server to the client.
+type Location struct {
 	ObjectId    int32
 	Name        string
 	Description string

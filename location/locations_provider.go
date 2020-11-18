@@ -1,4 +1,4 @@
-// Package, containing the core logic of this application. The main goal is to fetch and parse the data from the
+// Package, containing the location logic of this application. The main goal is to fetch and parse the data from the
 // database and return an easily jsonable structure that can be exposed via Web Server.
 // We make use of two other packages available in this repo, mainly distance (for calculating distance) and dbconnectors
 // (for fetching data).
@@ -11,29 +11,29 @@ import (
 	"sort"
 )
 
-// The main struct of this package. It should accept initialised Database Connector and Distance Calculator. Keep in
+// The main struct of this package. It should accept initialised Database Connector and Distance Estimator. Keep in
 // mind that pointers are being used in order not to replicate heavy objects (eg. JSONDataConnector).
 // Methods:
-// 		GetAndParseTouristLocationData: This method should accept userCoordinates (latitude and longitude) and a float32
+// 		GetAndParseLocationsData: This method should accept userCoordinates (latitude and longitude) and a float32
 //		indicating maximum distance for which to return TouristLocations. If you want to return all locations, without
 //		distance filtering, simply provide 0.
 //
-type TouristLocationProvider struct {
-	DistanceCalculator *distance.Calculator
-	DatabaseConnector  *dbconnectors.DatabaseConnector
+type LocationsProvider struct {
+	DistanceEstimator *distance.Estimator
+	DatabaseConnector *dbconnectors.DatabaseConnector
 }
 
 // This method fetches data from DatabaseConnector. This data is parsed in a way that:
-// 		1. Distance from the user is calculated (via DistanceCalculator) for each location.
-//		2. If the max distance is 0 or the distance from user is smaller than this threshold, the TouristLocation object
+// 		1. Distance from the user is calculated (via DistanceEstimator) for each location.
+//		2. If the max distance is 0 or the distance from user is smaller than this threshold, the Location object
 //		is created and appended to the final results array (slice).
 //		3. Finally the results array (slice) is sorted based on the distance from the user.
-func (t *TouristLocationProvider) GetAndParseTouristLocationData(
+func (t *LocationsProvider) GetAndParseLocationsData(
 	userCoordinates model.Coordinates,
 	maxDistanceFromUser float32,
-) []model.TouristLocation {
+) []model.Location {
 
-	var results []model.TouristLocation
+	var results []model.Location
 	singleDataFieldToIntMap := (*t.DatabaseConnector).ProvideData()
 
 	for objectId, dataField := range singleDataFieldToIntMap {
@@ -42,10 +42,10 @@ func (t *TouristLocationProvider) GetAndParseTouristLocationData(
 			Longitude: dataField.Longitude,
 		}
 
-		distanceToLocation := (*t.DistanceCalculator).CalculateDistance(userCoordinates, locationCoordinates)
+		distanceToLocation := (*t.DistanceEstimator).EstimateDistance(userCoordinates, locationCoordinates)
 
 		if isDistanceOk(maxDistanceFromUser, distanceToLocation) {
-			touristLocation := model.TouristLocation{
+			touristLocation := model.Location{
 				ObjectId:    int32(objectId),
 				Name:        dataField.Name,
 				Description: dataField.Description,
@@ -61,8 +61,8 @@ func (t *TouristLocationProvider) GetAndParseTouristLocationData(
 	return results
 }
 
-// Sorts the TouristLocation slice by distance from the user, ascending.
-func sortResultsByDistance(resultSlice []model.TouristLocation) {
+// Sorts the Location slice by distance from the user, ascending.
+func sortResultsByDistance(resultSlice []model.Location) {
 	sort.SliceStable(resultSlice, func(i, j int) bool {
 		return (resultSlice[i]).Distance < ((resultSlice)[j]).Distance
 	})

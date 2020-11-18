@@ -83,7 +83,7 @@ func TestHaversine_CalculateDistance(t *testing.T) {
 
 	for _, testCase := range testCases {
 		actualDistance := testCase.expectedDistance
-		calculatedDistance := haversineDistanceCalculator.CalculateDistance(
+		calculatedDistance := haversineDistanceCalculator.EstimateDistance(
 			testCase.firstCoordinates, testCase.secondCoordinates,
 		)
 
