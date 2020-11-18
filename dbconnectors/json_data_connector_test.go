@@ -8,15 +8,15 @@ import (
 
 const mockDataPath = "./mock.json"
 
-func makeExpectedLoadedContent() map[int]model.SingleDataField {
-	expectedLoadedContent := make(map[int]model.SingleDataField)
-	expectedLoadedContent[1] = model.SingleDataField{
+func makeExpectedLoadedContent() map[int]model.SingleLocationData {
+	expectedLoadedContent := make(map[int]model.SingleLocationData)
+	expectedLoadedContent[1] = model.SingleLocationData{
 		Latitude:    52.1039472,
 		Longitude:   21.26832,
 		Name:        "City Hall",
 		Description: "City Hall of the Otwock city.",
 	}
-	expectedLoadedContent[2] = model.SingleDataField{
+	expectedLoadedContent[2] = model.SingleLocationData{
 		Latitude:    52.1095869,
 		Longitude:   21.2630788,
 		Name:        "Railway Station",
