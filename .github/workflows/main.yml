@@ -4,7 +4,7 @@ on:
     branches: [main, develop]
 
 jobs:
-  build:
+  CI:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,5 +18,7 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Build package
         run: make build
+      - name: Lint code
+        run: make lint
       - name: Run tests
         run: make test
