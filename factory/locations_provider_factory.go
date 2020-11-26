@@ -9,7 +9,6 @@ import (
 	"github.com/sebastian-sz/GotwockAppServer/location"
 )
 
-// Tourist Location Provider initializers
 func initializeTouristLocationProvider(
 	databaseConnector *dbconnectors.DatabaseConnector, distanceCalculator *distance.Estimator,
 ) location.LocationsProvider {
