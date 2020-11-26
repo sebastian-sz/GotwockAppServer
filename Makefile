@@ -20,3 +20,6 @@ lint:
 		echo "";\
 		exit 1;\
 	fi
+
+sync_dependencies:
+	go mod tidy
