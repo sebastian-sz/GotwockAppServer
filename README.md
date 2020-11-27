@@ -59,7 +59,16 @@ The test suite is automatically run with each PR to `main` or `develop` branch.
 In order to run the test manually run: `make test` or `go test ./...`.
 
 ### End to end tests:
-This is a work in progress. As for now, you can manually hit the server with curl. 
+End to end tests are written in Python, because of multiple reasons:
+1. It's easy.
+2. Python comes preinstalled on most platforms.
+3. We want to see how the server behaves outside of language it was written.
+
+To run end to end tests you need python3 and requests library:  
+`python3 -m pip install requests`
+
+after running the server on a separate terminal / process:  
+`python3 end2end_tests/run_e2e_tests.py`
 
 # Backstory.
 Yes, you can skip it if you want.  
