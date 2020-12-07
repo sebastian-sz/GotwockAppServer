@@ -5,44 +5,59 @@ import (
 	"testing"
 )
 
-func Test_parsedRequestData_checkMissingValues(t *testing.T) {
+func Test_parsedRequestData_CheckIfAllDataProvided_BadRequest(t *testing.T) {
 	testCaseParameters := []struct {
-		requestData     parsedRequestData
-		expectedBool    bool
-		expectedMessage string
+		requestData         parsedRequestData
+		expectedRaisedError incompleteRequestError
 	}{
-		{ // Case both values are non-zero
+		{ // Case Latitude has not been provided
 			requestData: parsedRequestData{
-				Latitude:  1.0,
-				Longitude: 1.0,
+				Longitude:   pointerOf(1.0),
+				MaxDistance: pointerOf(1.0),
 			},
-			expectedBool:    false,
-			expectedMessage: "",
+			expectedRaisedError: incompleteRequestError{"Missing required field(s) in request: Latitude"},
 		},
-		{ // Case Latitude has been set with default value
+		{ // Case Longitude has not been provided
 			requestData: parsedRequestData{
-				Longitude: 1.0,
+				Latitude:    pointerOf(1.0),
+				MaxDistance: pointerOf(1.0),
 			},
-			expectedBool:    true,
-			expectedMessage: "Missing required field(s) in request: Latitude",
+			expectedRaisedError: incompleteRequestError{"Missing required field(s) in request: Longitude"},
 		},
-		{ // Case Longitude has been set with default value
-			requestData: parsedRequestData{
-				Latitude: 1.0,
+		{ // Case both Longitude and Latitude has not been provided
+			requestData: parsedRequestData{MaxDistance: pointerOf(1.0)},
+			expectedRaisedError: incompleteRequestError{
+				"Missing required field(s) in request: Longitude Latitude",
 			},
-			expectedBool:    true,
-			expectedMessage: "Missing required field(s) in request: Longitude",
 		},
-		{ // Case both Longitude and Latitude are set with default values
-			requestData:     parsedRequestData{},
-			expectedBool:    true,
-			expectedMessage: "Missing required field(s) in request: Longitude Latitude",
+		{ // Case all the values were missing from the request body:
+			requestData: parsedRequestData{},
+			expectedRaisedError: incompleteRequestError{
+				"Missing required field(s) in request: Longitude Latitude MaxDistance",
+			},
 		},
 	}
 
 	for _, testCase := range testCaseParameters {
-		message, boolCheck := testCase.requestData.checkMissingValues()
-		assert.Equal(t, testCase.expectedBool, boolCheck)
-		assert.Equal(t, testCase.expectedMessage, message)
+		missingDataError := testCase.requestData.CheckIfAllDataProvided()
+		assert.Equal(t, &testCase.expectedRaisedError, missingDataError)
 	}
+}
+
+func Test_parsedRequestData_CheckIfAllDataProvided_GoodRequest(t *testing.T) {
+	requestData := parsedRequestData{
+		Latitude:    pointerOf(1.0),
+		Longitude:   pointerOf(1.0),
+		MaxDistance: pointerOf(1.0),
+	}
+
+	missingDataError := requestData.CheckIfAllDataProvided()
+
+	assert.Equal(t, nil, missingDataError)
+
+}
+
+// Utility function to quickly fetch pointer of variables on the fly.
+func pointerOf(x float32) *float32 {
+	return &x
 }

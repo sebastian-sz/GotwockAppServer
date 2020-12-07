@@ -35,40 +35,41 @@ func (app *App) makeRouter() *mux.Router {
 
 // Handle incoming request.
 // There are multiple checks performed before the request data is passed further to the location.LocationsProvider.
-// For the detailed list of all checks please see functions decodeJSONBody and parsedRequestData.checkMissingValues.
+// For the detailed list of all checks please see functions decodeJSONBody and parsedRequestData.CheckIfAllDataProvided.
 // If all the above checks have been passed the data is processed by te location.LocationsProvider and response is
 // returned.
 func (app *App) handleRequest() http.HandlerFunc {
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
 
 		var requestData parsedRequestData
-		err := decodeJSONBody(responseWriter, request, &requestData)
-		if err != nil {
+		decodeError := decodeJSONBody(responseWriter, request, &requestData)
+
+		if decodeError != nil {
 			var malformedRequest *malformedRequestError
-			if errors.As(err, &malformedRequest) {
-				http.Error(responseWriter, malformedRequest.msg, malformedRequest.status)
+			if errors.As(decodeError, &malformedRequest) {
+				http.Error(responseWriter, malformedRequest.message, malformedRequest.status)
 			} else {
-				log.Println(err.Error())
+				log.Println(decodeError.Error())
 				http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			}
 			return
 		}
 
-		message, valuesWereMissingInRequest := requestData.checkMissingValues()
-		if valuesWereMissingInRequest {
-			http.Error(responseWriter, message, http.StatusBadRequest)
+		missingValuesError := requestData.CheckIfAllDataProvided()
+		if missingValuesError != nil {
+			http.Error(responseWriter, missingValuesError.Error(), http.StatusBadRequest)
 			return
 		}
 
 		log.Printf("Received and parsed request: %v\n", requestData)
 
 		userCoordinates := model.Coordinates{
-			Latitude:  requestData.Latitude,
-			Longitude: requestData.Longitude,
+			Latitude:  *requestData.Latitude,
+			Longitude: *requestData.Longitude,
 		}
 
 		nearestLocations := app.LocationsProvider.GetAndParseLocationsData(
-			userCoordinates, requestData.MaxDistanceFromUser,
+			userCoordinates, *requestData.MaxDistance,
 		)
 
 		responseLocationData := ResponseData{

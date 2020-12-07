@@ -44,7 +44,7 @@ func (t *LocationsProvider) GetAndParseLocationsData(
 
 		distanceToLocation := (*t.DistanceEstimator).EstimateDistance(userCoordinates, locationCoordinates)
 
-		if isDistanceOk(maxDistanceFromUser, distanceToLocation) {
+		if distanceToLocation <= maxDistanceFromUser {
 			touristLocation := model.Location{
 				ObjectId:    int32(objectId),
 				Name:        dataField.Name,
@@ -66,14 +66,4 @@ func sortResultsByDistance(resultSlice []model.Location) {
 	sort.SliceStable(resultSlice, func(i, j int) bool {
 		return (resultSlice[i]).Distance < ((resultSlice)[j]).Distance
 	})
-}
-
-// Boolean check if we want to append certain locations to the list that we will later send to the users.
-// There are two cases here:
-// 		1. max distance is zero, meaning the user wants to see all the locations.
-// 		2. max distance is non zero, meaning we want to have true if distance is smaller or equal to max possible
-//		distance.
-func isDistanceOk(maxDistanceFromUser, distanceToLocation float32) bool {
-	return maxDistanceFromUser == 0 || distanceToLocation <= maxDistanceFromUser
-
 }

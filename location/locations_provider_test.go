@@ -8,47 +8,6 @@ import (
 	"testing"
 )
 
-// Run parametrized test, to check whether function isDistanceOk correctly returns boolean value.
-func Test_isDistanceOk(t *testing.T) {
-	testCases := []struct {
-		maxDistance    float32
-		userDistance   float32
-		expectedResult bool
-	}{
-		{ // Case max distance = 0, return all results.
-			maxDistance:    0.0,
-			userDistance:   1337.0,
-			expectedResult: true,
-		},
-		{ // Case max distance = 0, see if userDistance doesn't matter.
-			maxDistance:    0.0,
-			userDistance:   0.0,
-			expectedResult: true,
-		},
-		{ // Case maxDistance > userDistance
-			maxDistance:    10.0,
-			userDistance:   5.0,
-			expectedResult: true,
-		},
-		{ // Case maxDistance < userDistance
-			maxDistance:    10.0,
-			userDistance:   15.0,
-			expectedResult: false,
-		},
-		{ // Case maxDistance non zero and equal to userDistance
-			maxDistance:    10.0,
-			userDistance:   10.0,
-			expectedResult: true,
-		},
-	}
-
-	for _, testCase := range testCases {
-		outcome := isDistanceOk(testCase.maxDistance, testCase.userDistance)
-		assert.Equal(t, testCase.expectedResult, outcome)
-
-	}
-}
-
 // Run parametrized test to check, whether function sortResultsByDistance correctly sorts (in-place) given slice.
 func Test_sortResultsByDistance(t *testing.T) {
 	firstLocation := model.Location{
