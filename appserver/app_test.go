@@ -86,7 +86,7 @@ func TestAppHandlingBadRequests(t *testing.T) {
 			headerType:      requestHeader,
 			requestData:     "{}",
 			expectedCode:    http.StatusBadRequest,
-			expectedMessage: "Missing required field(s) in request: Longitude Latitude\n",
+			expectedMessage: "Missing required field(s) in request: Longitude Latitude MaxDistance\n",
 		},
 		{ // Passing multiple json objects
 			headerType:      requestHeader,
@@ -131,7 +131,7 @@ func TestAppHandlingGoodRequests(t *testing.T) {
 		requestData string
 	}{
 		{"{\"Latitude\":52.0989711, \"Longitude\": 21.2715719, \"maxDistance\": 5.1}"},
-		{"{\"Latitude\":52.0989711, \"Longitude\": 21.2715719, \"maxDistance\": 0.0}"},
+		{"{\"Latitude\":52.0989711, \"Longitude\": 21.2715719, \"maxDistance\": 1.2}"},
 		{"{\"Latitude\":52.1101533, \"Longitude\": 21.2567803, \"maxDistance\": 3.0}"},
 		{"{\"Latitude\":52.1031484, \"Longitude\": 21.2802653, \"maxDistance\": 7.0}"},
 	}

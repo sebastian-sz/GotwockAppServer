@@ -19,7 +19,7 @@ build the package (this will also install dependencies)
 finally, run:  
 `./bin/GotwockAppServer`
 
-If all goes well you should see the message   
+If all goes well, you should see the message:   
 `Starting server at: http://127.0.0.1:9100`
 
 # How to use?
@@ -47,9 +47,6 @@ print(r.text)
 print(r.status_code)
 
 ```
-
-To get all available locations simply pass 0.0 for `maxDistance`, or don't pass it at all. `Latitude` and `Longitude` 
-are mandatory.
 
 # Running tests.
 
