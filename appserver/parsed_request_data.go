@@ -4,40 +4,48 @@ import (
 	"strings"
 )
 
-// Struct describing data format expected to receive in the request.
-// I am extending this struct with one method: checkMissingValues(). Go will auto set all missing float32 to 0, so the
-// only way to make sure they are present (and required) in the request body is to check whether they are equal to zero.
-// This is not the nicest way, but it is not expected in the real world scenario to provide exactly 0 longitude or
-// exactly zero latitude.
-type parsedRequestData struct {
-	Latitude            float32 `json:"latitude"`
-	Longitude           float32 `json:"longitude"`
-	MaxDistanceFromUser float32 `json:"maxDistance"`
+// Custom error that will be raised if the request doesn't contain mandatory fields.
+type incompleteRequestError struct {
+	message string
 }
 
-// Check if required fields (Latitude or Longitude) have been set with default zero values.
-// If they were that would indicate that Go has autofilled them with zeros, which means they were missing in the
-// request body.
-// This method prevents weird behaviour where you could receive the entire database after passing '{}' in the request
-// body.
-// Returns string message indicating which fields where missing and boolean for quick check if anything was missing.
-func (requestData *parsedRequestData) checkMissingValues() (string, bool) {
+func (error *incompleteRequestError) Error() string {
+	return error.message
+}
+
+// Struct describing data format expected to receive in the request.
+// I am using pointers so that values missing in request are filled with easy-to-check <nil> values, rather than
+// quite ambiguous, default zero values (there is no way to know whether the user has passed zero or did the Go language
+// autofilled the value).
+type parsedRequestData struct {
+	Latitude    *float32 `json:"latitude"`
+	Longitude   *float32 `json:"longitude"`
+	MaxDistance *float32 `json:"maxDistance"`
+}
+
+// Check if required fields (Latitude, Longitude and MaxDistance) have been provided in the request.
+// Returns incompleteRequestError if one or more required fields have been missing from the request body. If all fields
+// are present, returns nil.
+func (requestData *parsedRequestData) CheckIfAllDataProvided() error {
 	initialMessage := "Missing required field(s) in request:"
 
 	var missingFieldsMessage strings.Builder
 	missingFieldsMessage.WriteString(initialMessage)
 
-	if requestData.Longitude == 0 {
+	if requestData.Longitude == nil {
 		missingFieldsMessage.WriteString(" Longitude")
 	}
-	if requestData.Latitude == 0 {
+	if requestData.Latitude == nil {
 		missingFieldsMessage.WriteString(" Latitude")
+	}
+	if requestData.MaxDistance == nil {
+		missingFieldsMessage.WriteString(" MaxDistance")
 	}
 
 	if missingFieldsMessage.String() != initialMessage {
-		return missingFieldsMessage.String(), true
+		return &incompleteRequestError{message: missingFieldsMessage.String()}
 	} else {
-		return "", false
+		return nil
 	}
 
 }

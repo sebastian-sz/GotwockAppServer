@@ -23,3 +23,6 @@ lint:
 
 sync_dependencies:
 	go mod tidy
+
+e2e_tests:
+	python3 end2end_tests/run_e2e_tests.py
