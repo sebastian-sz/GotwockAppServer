@@ -4,21 +4,17 @@ import (
 	"github.com/sebastian-sz/GotwockAppServer/dbconnectors"
 	"github.com/sebastian-sz/GotwockAppServer/distance"
 	"github.com/sebastian-sz/GotwockAppServer/model"
+	"github.com/sebastian-sz/GotwockAppServer/projectpath"
 	"github.com/stretchr/testify/assert"
+	"path/filepath"
 	"testing"
 )
 
 // Run parametrized test to check, whether function sortResultsByDistance correctly sorts (in-place) given slice.
 func Test_sortResultsByDistance(t *testing.T) {
-	firstLocation := model.Location{
-		Distance: 1.0,
-	}
-	secondLocation := model.Location{
-		Distance: 8.0,
-	}
-	thirdLocation := model.Location{
-		Distance: 16.0,
-	}
+	firstLocation := model.Location{Distance: 1.0}
+	secondLocation := model.Location{Distance: 8.0}
+	thirdLocation := model.Location{Distance: 16.0}
 
 	testCases := []struct {
 		inputSlice    []model.Location
@@ -45,15 +41,17 @@ func Test_sortResultsByDistance(t *testing.T) {
 	}
 }
 
+// We need to declare this function here, as import cycle from factory is not allowed.
 func initializeJsonHaversineTouristLocationProvider() LocationsProvider {
-	var haversine distance.Estimator = &distance.Haversine{}
-	var jsonDbConnector dbconnectors.DatabaseConnector = &dbconnectors.JSONDataConnector{
-		DataPath:   "../data/otwock_db.json",
-		CachedData: nil,
-	}
 
+	rootPath := projectpath.GetRootPath()
+	dataPath := filepath.Join(rootPath, "data/otwock_db.json")
+	var jsonDbConnector dbconnectors.DatabaseConnector = &dbconnectors.JSONDataConnector{
+		DataPath: dataPath,
+	}
 	jsonDbConnector.Initialize()
 
+	var haversine distance.Estimator = &distance.Haversine{}
 	return LocationsProvider{
 		DistanceEstimator: &haversine,
 		DatabaseConnector: &jsonDbConnector,

@@ -25,7 +25,7 @@ func makeExpectedLoadedContent() map[int]model.SingleLocationData {
 	return expectedLoadedContent
 }
 
-func TestJSONDataConnector_LoadContentToMemory(t *testing.T) {
+func TestJSONDataConnector_Initialize(t *testing.T) {
 	jsonDBConnector := JSONDataConnector{
 		DataPath:   mockDataPath,
 		CachedData: nil,

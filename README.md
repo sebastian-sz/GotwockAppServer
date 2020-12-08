@@ -1,5 +1,6 @@
 # GotwockAppServer
-Otwock App Server rewritten in Go!  
+Otwock App Server rewritten in Go!
+
 Otwock App Server was the idea of a simple backend server that given user coordinates
 could display a list of nearby tourist or simply interesting locations.  
 It probably would not top Google Maps in that way, but it was more of a programming exercise.  
@@ -39,7 +40,7 @@ import requests
 
 server = "http://127.0.0.1:9100"
 headers = {"Content-Type": "application/json"}
-payload = {"Latitude": 52.0989711, "Longitude": 21.2715719, "maxDistance": 5.1}
+payload = {"Latitude": 52.0989711, "Longitude": 21.2715719, "MaxDistance": 5.1}
 
 r = requests.post(server, json=payload, headers=headers)
 

@@ -13,11 +13,6 @@ import (
 
 // The main struct of this package. It should accept initialised Database Connector and Distance Estimator. Keep in
 // mind that pointers are being used in order not to replicate heavy objects (eg. JSONDataConnector).
-// Methods:
-// 		GetAndParseLocationsData: This method should accept userCoordinates (latitude and longitude) and a float32
-//		indicating maximum distance for which to return TouristLocations. If you want to return all locations, without
-//		distance filtering, simply provide 0.
-//
 type LocationsProvider struct {
 	DistanceEstimator *distance.Estimator
 	DatabaseConnector *dbconnectors.DatabaseConnector
@@ -25,9 +20,9 @@ type LocationsProvider struct {
 
 // This method fetches data from DatabaseConnector. This data is parsed in a way that:
 // 		1. Distance from the user is calculated (via DistanceEstimator) for each location.
-//		2. If the max distance is 0 or the distance from user is smaller than this threshold, the Location object
+//		2. If the distance from user is smaller than max distance, the Location object
 //		is created and appended to the final results array (slice).
-//		3. Finally the results array (slice) is sorted based on the distance from the user.
+//		3. The results array (slice) is sorted based on the distance from the user.
 func (t *LocationsProvider) GetAndParseLocationsData(
 	userCoordinates model.Coordinates,
 	maxDistanceFromUser float32,
