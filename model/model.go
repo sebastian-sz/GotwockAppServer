@@ -1,5 +1,4 @@
 // Package containing various dataclasses used inside this project.
-
 package model
 
 // Coordinates, describing the location of an object.
@@ -17,8 +16,8 @@ type SingleLocationData struct {
 	Description string
 }
 
-// Struct describing single location data as returned by the location.LocationsProvider and by the appserver.App. This
-// is the data that (in form of a slice) will be passed by the server to the client.
+// Struct describing single location data as returned by the location.LocationsProvider. This is the data that
+// (in form of a slice) will be passed by the server to the client.
 type Location struct {
 	ObjectId    int32
 	Name        string

@@ -12,20 +12,20 @@ func Test_parsedRequestData_CheckIfAllDataProvided_BadRequest(t *testing.T) {
 	}{
 		{ // Case Latitude has not been provided
 			requestData: parsedRequestData{
-				Longitude:   pointerOf(1.0),
-				MaxDistance: pointerOf(1.0),
+				Longitude:   pointerTo(1.0),
+				MaxDistance: pointerTo(1.0),
 			},
 			expectedRaisedError: incompleteRequestError{"Missing required field(s) in request: Latitude"},
 		},
 		{ // Case Longitude has not been provided
 			requestData: parsedRequestData{
-				Latitude:    pointerOf(1.0),
-				MaxDistance: pointerOf(1.0),
+				Latitude:    pointerTo(1.0),
+				MaxDistance: pointerTo(1.0),
 			},
 			expectedRaisedError: incompleteRequestError{"Missing required field(s) in request: Longitude"},
 		},
 		{ // Case both Longitude and Latitude has not been provided
-			requestData: parsedRequestData{MaxDistance: pointerOf(1.0)},
+			requestData: parsedRequestData{MaxDistance: pointerTo(1.0)},
 			expectedRaisedError: incompleteRequestError{
 				"Missing required field(s) in request: Longitude Latitude",
 			},
@@ -46,9 +46,9 @@ func Test_parsedRequestData_CheckIfAllDataProvided_BadRequest(t *testing.T) {
 
 func Test_parsedRequestData_CheckIfAllDataProvided_GoodRequest(t *testing.T) {
 	requestData := parsedRequestData{
-		Latitude:    pointerOf(1.0),
-		Longitude:   pointerOf(1.0),
-		MaxDistance: pointerOf(1.0),
+		Latitude:    pointerTo(1.0),
+		Longitude:   pointerTo(1.0),
+		MaxDistance: pointerTo(1.0),
 	}
 
 	missingDataError := requestData.CheckIfAllDataProvided()
@@ -57,7 +57,7 @@ func Test_parsedRequestData_CheckIfAllDataProvided_GoodRequest(t *testing.T) {
 
 }
 
-// Utility function to quickly fetch pointer of variables on the fly.
-func pointerOf(x float32) *float32 {
+// Utility function to quickly fetch pointer of the variable.
+func pointerTo(x float32) *float32 {
 	return &x
 }

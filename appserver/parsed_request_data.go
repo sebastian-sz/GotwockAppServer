@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-// Custom error that will be raised if the request doesn't contain mandatory fields.
+// Custom error that will be raised if the request doesn't contain required fields.
 type incompleteRequestError struct {
 	message string
 }
@@ -15,8 +15,8 @@ func (error *incompleteRequestError) Error() string {
 
 // Struct describing data format expected to receive in the request.
 // I am using pointers so that values missing in request are filled with easy-to-check <nil> values, rather than
-// quite ambiguous, default zero values (there is no way to know whether the user has passed zero or did the Go language
-// autofilled the value).
+// quite ambiguous, default zero values (e.g. there is no way to tell whether the user has passed zero or did the Go
+// language autofilled the value).
 type parsedRequestData struct {
 	Latitude    *float32 `json:"latitude"`
 	Longitude   *float32 `json:"longitude"`

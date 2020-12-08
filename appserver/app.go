@@ -1,6 +1,6 @@
 // Package for creating mux server to connect the entire application with the outside world.
-// In more detail: here, we provide the logic of parsing requests, running location.LocationsProvider, and formatting
-// a proper response.
+// In more detail: here, we provide the logic of parsing requests, running GetAndParseLocationsData via
+// location.LocationsProvider, and formatting a proper response.
 package appserver
 
 import (
@@ -19,14 +19,19 @@ type ResponseData struct {
 	Locations []model.Location `json:"locations"`
 }
 
-// Responsible for handling incoming requests, data parsing and response writing.
+// The core structure of the server. Responsible for handling incoming requests, data parsing and response writing.
+// Fields:
+//		EndpointPath: string, endpoint under which to serve requests.
+//		ServerAddr: string, address of the server.
+//		LocationsProvider: pointer to location.LocationsProvider. Used for fetching locations, based on user
+//		coordinates. We are passing a pointer to avoid copying already created structs.
 type App struct {
 	EndpointPath      string
 	ServerAddr        string
 	LocationsProvider *location.LocationsProvider
 }
 
-// Create router for the application
+// Create router for the application.
 func (app *App) makeRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc(app.EndpointPath, app.handleRequest()).Methods("POST")
@@ -61,7 +66,9 @@ func (app *App) handleRequest() http.HandlerFunc {
 			return
 		}
 
-		log.Printf("Received and parsed request: %v\n", requestData)
+		log.Printf("Received and parsed request: Longitude %f Latitude %f MaxDistance %f\n",
+			*requestData.Longitude, *requestData.Latitude, *requestData.MaxDistance,
+		)
 
 		userCoordinates := model.Coordinates{
 			Latitude:  *requestData.Latitude,
@@ -93,7 +100,7 @@ func (app *App) handleRequest() http.HandlerFunc {
 	}
 }
 
-// Run method of the struct App. It creates mux http router and starts the server.
+// App's Run method. It creates mux http router and starts the server.
 func (app *App) Run() {
 	router := app.makeRouter()
 
