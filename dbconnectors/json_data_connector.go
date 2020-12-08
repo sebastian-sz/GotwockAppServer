@@ -10,7 +10,7 @@ import (
 
 // Database connector responsible for reading data from a .json file.
 // In order not to re-read the file for each ProvideData() call the data is loaded into the memory on the first
-// json read via LoadContentToMemory() method. The data is stored in memory throughout the life of the program.
+// json read via loadContentToMemory method. The data is stored in memory throughout the life of the program.
 // JSONDataConnector should only be used for either debugging / prototyping purposes or when the database size is small
 // enough that the data can be safely held in memory.
 // It is advised to move onto proper database when the data size becomes too large.

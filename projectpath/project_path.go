@@ -4,7 +4,7 @@
 // dbconnectors.JSONDataConnector is used).
 // In order to fix this issue one can invoke GetRootPath and join the result with relative path from the directory.
 // That way components like dbconnectors.JSONDataConnector are going to receive full, absolute path and it will be
-// possible to run the entire app from different directories.
+// possible to run the server from different directories.
 package projectpath
 
 import (
